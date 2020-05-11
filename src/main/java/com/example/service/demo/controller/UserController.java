@@ -5,6 +5,10 @@ import com.example.service.demo.dao.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -22,6 +26,10 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Value("${welcome.message}")
+    private String valueFromFile;
+
+
     @GetMapping(value="/users")
     public Collection<User> listUser(){
         logger.info("Get all users interface called.");
@@ -38,5 +46,10 @@ public class UserController {
     public User saveUser(@RequestBody User user){
         logger.info("Signup interface called. User: [{0}]");
         return userRepository.save(user);
+    }
+
+    @GetMapping("/message")
+    public String getWelcomemessage() {
+        return valueFromFile;
     }
 }
