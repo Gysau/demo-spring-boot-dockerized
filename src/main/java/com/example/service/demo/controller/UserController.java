@@ -1,17 +1,12 @@
 package com.example.service.demo.controller;
 
+import com.example.service.demo.dao.UserRepositoryService;
 import com.example.service.demo.model.User;
-import com.example.service.demo.dao.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collection;
 
 /**
  * API implementation for the CRUD operations.
@@ -24,28 +19,28 @@ public class UserController {
     Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepositoryService userRepositoryService;
 
     @Value("${welcome.message}")
     private String valueFromFile;
 
 
     @GetMapping(value="/users")
-    public Collection<User> listUser(){
+    public Iterable<User> listUser(){
         logger.info("Get all users interface called.");
-        return userRepository.findAll();
+        return userRepositoryService.findAll();
     }
 
     @GetMapping(value = "/user/{id}")
     public User getOne(@PathVariable(value = "id") String id){
         logger.info("Get user by id interface called. ID: [{0}]");
-        return userRepository.findById(Long.valueOf(id)).orElseThrow(IllegalStateException::new);
+        return userRepositoryService.findById(Long.valueOf(id)).orElseThrow(IllegalStateException::new);
     }
 
     @PostMapping(value="/signup")
     public User saveUser(@RequestBody User user){
         logger.info("Signup interface called. User: [{0}]");
-        return userRepository.save(user);
+        return userRepositoryService.save(user);
     }
 
     @GetMapping("/message")
